@@ -28,16 +28,28 @@ def pca(X, K):
         K = D
 
     # first, we need to center the data
-    ### TODO: YOUR CODE HERE
-    util.raiseNotDefined()
+    XCentered = X - X.mean(0)
+
+    # Calculate covariance using unbiased estimation
+    covariance = dot((XCentered).T, XCentered)/(N-1)
+
 
     # next, compute eigenvalues of the data variance
     #    hint 1: look at 'help(matplotlib.pylab.eig)'
     #    hint 2: you'll want to get rid of the imaginary portion of the eigenvalues; use: real(evals), real(evecs)
     #    hint 3: be sure to sort the eigen(vectors,values) by the eigenvalues: see 'argsort', and be sure to sort in the right direction!
-    #             
-    ### TODO: YOUR CODE HERE
-    util.raiseNotDefined()
+    
+    # Get eigenvalues and eigenvectors using numpy lib 
+    evals,evects = eig(covariance)
+
+    # Get sorted indeces from real value of eigenvalues, reverse direction, and take top K
+    sortInd = argsort(real(evals))[::-1][0:K]
+
+    # Sort the eigenvalues and eigenvectors and take real part
+    evals = real(evals[sortInd])
+    Z = real(evects[:, sortInd])
+    # Make projection onto data
+    P = dot(XCentered, Z)
 
     return (P, Z, evals)
 
