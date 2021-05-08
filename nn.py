@@ -47,7 +47,8 @@ class NN:
             # This intermediate results to will then be stored to D_stack.
 
             ### YOUR CODE HERE ###
-            raise NotImplementedError("Calculate D")
+            E = np.matmul(ws[idx], D) + bs[idx]
+            D = self.activation_function.activate(E)
             D_stack.append(D)
 
         Yhat = np.matmul(ws[-1], D) + bs[-1]
@@ -70,16 +71,22 @@ class NN:
             #1. Update grad for the current layer (G_k in the tutorial)
 
             ### YOUR CODE HERE ###
-            raise NotImplementedError("Update grad")
+            Ds = D_stack[idx]
+
+            E = np.matmul(ws[idx], Ds) + bs[idx]
+            backPropGrad = self.activation_function.backprop_grad(E)
+            grad = backPropGrad * (np.matmul(ws[idx+1].T, grad))
 
             #2. Calculate grad_b (gradient with respect to b of the current layer)
 
             ### YOUR CODE HERE ###
-            raise NotImplementedError("Calculate grad_b")
+            grad_b = np.sum(grad, axis=1, keepdims=1)
+
             #3. Calculate grad_W (gradient with respect to W of the current layer)
 
             ### YOUR CODE HERE ###
-            raise NotImplementedError("Calculate grad_W")
+            grad_W = np.matmul(grad, Ds.T)
+            
             grad_bs.append(grad_b)
             grad_Ws.append(grad_W)
 
@@ -160,7 +167,7 @@ class SquaredLoss(LossFunction):
         # TODO 0: loss function for squared loss.
 
         ### YOUR CODE HERE ###
-        raise NotImplementedError("Implement SquaredLoss.")
+        return (1/(2*Y.shape[1]))*(np.linalg.norm(Yhat - Y)**2)
 
     def lossGradient(self, Y, Yhat):
         """
@@ -170,7 +177,7 @@ class SquaredLoss(LossFunction):
         #TODO 1: gradient for squared loss.
 
         ### YOUR CODE HERE ###
-        raise NotImplementedError("Implement SquaredLoss.")
+        return (1/(Y.shape[1]))*(Yhat - Y)
 
 
 class CELoss(LossFunction):
