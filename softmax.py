@@ -64,12 +64,7 @@ class SoftmaxRegression:
                                                     # softmax formula.
 
         W_X = W_X - np.max(W_X)
-        print(numClasses, exSize)
-        print(W_X.shape)
-        print(W.shape)
-        print(X.shape)
-        print(Y.shape)
-        print(W_X[0][2])
+
 
         # This is the indicator function used in the loss function, where indicator[a, b] = 1
         # when example b is labeled a (according to the target Y) and indicator[a, b] = 0 otherwise.
@@ -99,8 +94,6 @@ class SoftmaxRegression:
 
         probabilities = W_X
 
-        print(indicator)
-
         for col in range(W_X.shape[1]):
             temp = np.exp(W_X[:,col])
             total = sum(temp)
@@ -109,9 +102,9 @@ class SoftmaxRegression:
             probabilities[:,col] = temp
 
 
-        cost = np.multiply(np.log(np.sum(np.multiply(probabilities, indicator), 0)), -1)
-        print(cost.shape)
-        gradient = W
+        cost = np.multiply(np.sum(np.multiply(np.log(probabilities), indicator))/N, -1)
+
+        gradient = -1*(indicator - probabilities).dot(X.T)/N
 
         ### YOUR CODE HERE ###
 
@@ -164,7 +157,6 @@ class SoftmaxRegression:
 
         probabilities = W_X
 
-
         for col in range(W_X.shape[1]):
             temp = np.exp(W_X[:,col])
             total = sum(temp)
@@ -174,11 +166,9 @@ class SoftmaxRegression:
 
         predicted_classes = []
 
-        print(probabilities.shape)
         for col in range(probabilities.shape[1]):
             column = probabilities[:,col]
             predicted_classes.append(np.argmax(column))
-
 
 
         ### YOUR CODE (ENDS) HERE ###
